@@ -1,0 +1,19 @@
+{
+  "name": "gangster-channel",
+  "version": "1.0.0",
+  "main": "web/index.ts",
+  "license": "UNLICENSED",
+  "scripts": {
+    "shopify": "shopify",
+    "build": "shopify app build",
+    "dev": "shopify app dev",
+    "info": "shopify app info",
+    "scaffold": "shopify app scaffold",
+    "deploy": "shopify app deploy"
+  },
+  "dependencies": {
+    "@shopify/app": "3.11.0",
+    "@shopify/cli": "3.11.0"
+  },
+  "author": "iseungcheol"
+}
