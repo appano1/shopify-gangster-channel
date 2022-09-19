@@ -2,6 +2,7 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { Shopify, LATEST_API_VERSION } from "@shopify/shopify-api";
 
 import applyAuthMiddleware from "./middleware/auth.js";
@@ -42,14 +43,6 @@ Shopify.Context.initialize({
   SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
 });
 
-Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-  path: "/api/webhooks",
-  webhookHandler: async (_topic, shop, _body) => {
-    await AppInstallations.delete(shop);
-  },
-});
-
-// The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
 const BILLING_SETTINGS = {
   required: false,
@@ -77,6 +70,7 @@ export async function createServer(
   const app = express();
 
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
+  app.use(cors());
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
   applyAuthMiddleware(app, {
@@ -97,6 +91,18 @@ export async function createServer(
         res.status(500).send(e.message);
       }
     }
+  });
+
+  app.get("/api/oauth2", async (req, res) => {
+    // const shop = Shopify.Utils.sanitizeShop(req.query.shop);
+    // const queryParams = new URLSearchParams({
+    //   ...req.query,
+    //   ,
+    //   code,
+    // }).toString();
+
+    // return res.redirect(`/oauth?${queryParams}`);
+    res.send("hi");
   });
 
   // All endpoints after this point will require an active session

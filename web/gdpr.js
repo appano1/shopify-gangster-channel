@@ -1,6 +1,13 @@
 import { Shopify } from "@shopify/shopify-api";
 
 export function setupGDPRWebHooks(path) {
+  Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
+    path: "/api/webhooks",
+    webhookHandler: async (_topic, shop, _body) => {
+      await AppInstallations.delete(shop);
+    },
+  });
+
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
